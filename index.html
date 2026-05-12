@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>محفظتي الذكية | 50/30/20</title>
+    <!-- Font Awesome 6 (مجاني) للأيقونات -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: Tajawal أنيقة وعصرية -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" type="module"></script>
+</head>
+<body>
+<div class="container" id="app">
+    <!-- قسم تسجيل الدخول -->
+    <div id="authSection" class="glass-card">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <i class="fas fa-wallet" style="font-size: 3rem; color: #f0b90b;"></i>
+            <h2>محفظتي الذكية</h2>
+            <p>تقسيم الراتب 50/30/20 واستثمار الحلم</p>
+        </div>
+        <div id="loginForm">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="loginEmail" placeholder="example@mail.com">
+            <label>كلمة المرور</label>
+            <input type="password" id="loginPassword" placeholder="******">
+            <button id="loginBtn" style="width:100%; margin-top: 1rem;">تسجيل الدخول</button>
+            <p style="text-align:center; margin-top:0.5rem;">
+                <span id="forgotPasswordBtn" style="color:#f0b90b; cursor:pointer; font-size:0.85rem;"><i class="fas fa-question-circle"></i> هل نسيت كلمة المرور؟</span>
+            </p>
+            <p style="text-align:center; margin-top:1rem;">ليس لديك حساب؟ <span id="showSignup" style="color:#f0b90b; cursor:pointer;">إنشاء حساب</span></p>
+        </div>
+        <div id="signupForm" class="hidden">
+            <label>البريد الإلكتروني</label>
+            <input type="email" id="signupEmail" placeholder="example@mail.com">
+            <label>كلمة المرور</label>
+            <input type="password" id="signupPassword" placeholder="******">
+            <button id="signupBtn" style="width:100%; margin-top: 1rem;">إنشاء حساب</button>
+            
+            <p style="text-align:center; margin-top:1rem;">لديك حساب؟ <span id="showLogin" style="color:#f0b90b; cursor:pointer;">تسجيل الدخول</span></p>
+        </div>
+    </div>
+
+    <!-- لوحة التحكم الرئيسية -->
+    <div id="dashboard" class="hidden">
+        <header style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <i class="fas fa-chart-line" style="color:#f0b90b;"></i>
+                <span style="font-weight: bold;">مرحباً <span id="userEmailSpan"></span></span>
+            </div>
+            <button id="logoutBtn" class="btn-outline"><i class="fas fa-sign-out-alt"></i> خروج</button>
+        </header>
+
+        <!-- قسم إعداد الدخل الشهري والنسب - قابل للطي -->
+        <div class="glass-card" style="margin: 1.5rem 0;" id="settingsCard">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3><i class="fas fa-sliders-h"></i> إعداد الدخل والنسب</h3>
+                <button id="toggleSettingsBtn" class="btn-outline" style="padding: 0.3rem 0.8rem;"><i class="fas fa-cog"></i> تعديل</button>
+            </div>
+            <div id="settingsPanel">
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+                    <div style="flex:2; min-width: 180px;">
+                        <label>المرتب الشهري (جنيه)</label>
+                        <input type="number" id="monthlyIncome" placeholder="مثلاً 12000">
+                    </div>
+                    <div style="flex:1;">
+                        <label>الأساسيات</label>
+                        <input type="number" id="essPercent" value="50" step="1" min="0" max="100">
+                    </div>
+                    <div style="flex:1;">
+                        <label>الرفاهيات</label>
+                        <input type="number" id="wantsPercent" value="30" step="1" min="0" max="100">
+                    </div>
+                    <div style="flex:1;">
+                        <label>الاستثمار</label>
+                        <input type="number" id="investPercent" value="20" step="1" min="0" max="100">
+                    </div>
+                    <div style="flex:0 0 auto; display: flex; align-items: end;">
+                        <button id="saveSettingsBtn"><i class="fas fa-save"></i> حفظ</button>
+                    </div>
+                </div>
+                <div id="percentWarning" style="color:#ffaa66; font-size:0.8rem; margin-top: 8px;"></div>
+            </div>
+        </div>
+
+        <!-- نظرة عامة على الميزانية -->
+        <div class="budget-cards" id="budgetOverview">
+            <!-- سيتم تعبئتها بواسطة JS -->
+        </div>
+
+<!-- زر إضافة مصروف جديد عائم -->
+<button id="openModalBtn" class="float-add-btn"><i class="fas fa-plus-circle"></i> إضافة مصروف جديد</button>
+
+<!-- النافذة المنبثقة (Modal) -->
+<div id="expenseModal" class="modal">
+    <div class="modal-content">
+        <h3>
+            <span><i class="fas fa-wallet"></i> تسجيل مصروف</span>
+            <span class="close-modal">&times;</span>
+        </h3>
+        <div style="margin-bottom: 1rem;">
+            <label>القسم</label>
+            <select id="modalExpenseCategory" style="width:100%;">
+                <option value="essentials">🥗 الأساسيات</option>
+                <option value="wants">🎮 الرفاهيات</option>
+                <option value="investments">📈 الاستثمار</option>
+            </select>
+        </div>
+        <div style="margin-bottom: 1rem;">
+            <label>البحث عن الصنف أو اختياره</label>
+            <input type="text" id="searchSubInput" placeholder="اكتب للبحث... مثلاً: أوبر، مطعم، استثمار" style="width:100%;">
+            <div id="subItemsList"></div>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label>المبلغ (جنيه)</label>
+            <input type="number" id="modalExpenseAmount" placeholder="0.00" style="width:100%;">
+        </div>
+        <div style="display: flex; gap: 0.8rem;">
+            <button id="modalAddExpenseBtn" style="flex:1;"><i class="fas fa-check"></i> إضافة المصروف</button>
+            <button id="modalCancelBtn" class="btn-outline" style="flex:1;">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+        <!-- سجل المعاملات مع فلتر -->
+        <div class="glass-card trans" style="margin-top: 1.5rem;">
+            <h3><i class="fas fa-history"></i> سجل الإنفاق</h3>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">الكل</button>
+                <button class="filter-btn" data-filter="essentials">الأساسيات</button>
+                <button class="filter-btn" data-filter="wants">الرفاهيات</button>
+                <button class="filter-btn" data-filter="investments">الاستثمار</button>
+            </div>
+            <div id="transactionsList" class="transactions-list">
+                <div style="text-align:center;">لا توجد معاملات حتى الآن</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
